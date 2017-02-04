@@ -1,3 +1,4 @@
+const His = require('./his');
 class FSM {
 
 
@@ -14,6 +15,7 @@ class FSM {
       else {
         this.configcopy=config;
         this.top=this.configcopy.initial;
+        this.history=new His(this.top);
       }
     }
 
@@ -35,6 +37,7 @@ class FSM {
       for(var i=0;i<points.length;i++){
         if(points[i]==state){
           this.top=state;
+          this.history.adding(state);
           counter+=1;
           break;
         }
@@ -64,6 +67,7 @@ class FSM {
                 if(temp3[j]==event){
                    this.top=temp2[event];
                    done=true;
+                   this.history.adding(this.top);
                 }
              }
           }
@@ -114,19 +118,43 @@ class FSM {
      * Returns false if undo is not available.
      * @returns {Boolean}
      */
-    undo() {}
+    undo() {
+      if(this.history.present<1){
+           return false;
+      }
+      else{
+        this.history.present-=1;
+        var hh=this.history.action;
+        this.top=hh[this.history.present];
+        return true;
+      }
+    }
 
     /**
      * Goes redo to state.
      * Returns false if redo is not available.
      * @returns {Boolean}
      */
-    redo() {}
+    redo() {
+      if(this.history.present<1){
+           return false;
+      }
+      else{
+        this.history.present-=1;
+        var hh=this.history.action;
+        this.top=hh[this.history.present];
+        return true;
+      }
+    }
 
     /**
      * Clears transition history
      */
-    clearHistory() {}
+    clearHistory() {
+      this.history.action=[];
+      this.history.present=0;
+      this.history.head=0;
+    }
 }
 
 module.exports = FSM;
