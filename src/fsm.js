@@ -22,10 +22,10 @@ class FSM {
      * @returns {String}
      */
     getState() {
-        return this.top;
+      return this.top;
     }
 
-    /**
+      /**
      * Goes to specified state.
      * @param state
      */
@@ -64,11 +64,36 @@ class FSM {
      */
     getStates(event) {
       var sts=Object.keys(this.configcopy.states);
-      if(events==undefined){
+      var eveSt=[];
+      if(event==undefined){
         return sts;
       }
-      
+      else{
+        for(var i=0;i<sts.length;i++){
+          var curstate=sts[i];
+          var temp1=this.configcopy.states[curstate];
+          console.log(temp1);
+          var temp2=temp1['transitions'];
+          var temp3=Object.keys(temp2);
+          console.log(temp2);
+          console.log(temp3);
+          console.log(temp3.length);
+          for(var j=0; j<temp1.length;j++){
+              if(temp3[j]==event){
+                  eveST.push(curstate);
+              }
+
+          }
+
+        //console.log(this.configcopy.states[sts[i]]);
+
+      //console.log(Object.getOwnPropertyNames (this.configcopy.states));
+
+      }
     }
+    console.log('gh');
+  }
+
 
     /**
      * Goes back to previous state.
