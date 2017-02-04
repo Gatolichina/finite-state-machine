@@ -37,12 +37,18 @@ class FSM {
       for(var i=0;i<points.length;i++){
         if(points[i]==state){
           this.top=state;
-          this.history.adding(state);
-          counter+=1;
-          break;
+          if(this.history.head==this.history.present){
+             this.history.adding(state);
+          }
+           else {
+             this.history.action[this.history.head+1]=this.top;
+             this.history.present+=1;
+             this.history.head=this.history.present;
+          }
+         counter+=1;
+         break;
         }
       }
-
       if(counter==0){throw new Error('Error');}
     }
 
@@ -65,15 +71,23 @@ class FSM {
              var temp3=Object.keys(temp2);
              for(var j=0;j<temp3.length;j++){
                 if(temp3[j]==event){
-                   this.top=temp2[event];
-                   done=true;
-                   this.history.adding(this.top);
+                  done=true;
+                  this.top=temp2[event];
+                  if(this.history.head==this.history.present){
+                     this.history.adding(this.top);
+                  }
+                 else {
+                    this.history.action[this.history.head+1]=this.top;
+                    this.history.present+=1;
+                    this.history.head=this.history.present;
+                 }
+
                 }
              }
           }
         }
       }
-      if(!done){throw new Error('Error');}
+      if(!done){throw new Error('Error!!!!');}
     }
 
 
@@ -124,8 +138,7 @@ class FSM {
       }
       else{
         this.history.present-=1;
-        var hh=this.history.action;
-        this.top=hh[this.history.present];
+        this.top=this.history.action[this.history.present];
         return true;
       }
     }
@@ -136,13 +149,12 @@ class FSM {
      * @returns {Boolean}
      */
     redo() {
-      if(this.history.present<1){
+      if(this.history.present==this.history.head){
            return false;
       }
       else{
-        this.history.present-=1;
-        var hh=this.history.action;
-        this.top=hh[this.history.present];
+        this.history.present+=1;
+        this.top=this.history.action[this.history.present];
         return true;
       }
     }
