@@ -47,7 +47,31 @@ class FSM {
      * Changes state according to event transition rules.
      * @param event
      */
-    trigger(event) {}
+    trigger(event) {
+      var sts=Object.keys(this.configcopy.states);
+      var done=false;
+      if(event==undefined){
+           throw new Error('Error');
+      }
+      else{
+        for(var i=0;i<sts.length;i++){
+          var curstate=sts[i];
+          if(curstate==this.top){
+             var temp1=this.configcopy.states[curstate];
+             var temp2=temp1['transitions'];
+             var temp3=Object.keys(temp2);
+             for(var j=0;j<temp3.length;j++){
+                if(temp3[j]==event){
+                   this.top=temp2[event];
+                   done=true;
+                }
+             }
+          }
+        }
+      }
+      if(!done){throw new Error('Error');}
+    }
+
 
     /**
      * Resets FSM state to initial.
@@ -72,26 +96,16 @@ class FSM {
         for(var i=0;i<sts.length;i++){
           var curstate=sts[i];
           var temp1=this.configcopy.states[curstate];
-          console.log(temp1);
           var temp2=temp1['transitions'];
           var temp3=Object.keys(temp2);
-          console.log(temp2);
-          console.log(temp3);
-          console.log(temp3.length);
-          for(var j=0; j<temp1.length;j++){
+          for(var j=0; j<temp3.length;j++){
               if(temp3[j]==event){
-                  eveST.push(curstate);
+                  eveSt.push(curstate);
               }
-
           }
-
-        //console.log(this.configcopy.states[sts[i]]);
-
-      //console.log(Object.getOwnPropertyNames (this.configcopy.states));
-
       }
     }
-    console.log('gh');
+    return eveSt;
   }
 
 
